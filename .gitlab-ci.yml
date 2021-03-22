@@ -8,9 +8,9 @@ stages:
   - deploy
 
 variables:
-  APP_NAME: BLT-Project
+  APP_NAME: Drupal9Demo
   BLT: ./vendor/bin/blt
-  SCRIPT_DIR: ./vendor/mikemadison13/blt-gitlab-pipelines/scripts/gitlab
+  SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
   MYSQL_DATABASE: drupal
   MYSQL_ROOT_PASSWORD: drupal
 
@@ -51,6 +51,7 @@ build:
   extends: .global_cache
   allow_failure: false
   script:
+    - composer self-update
     - composer validate --no-check-all --ansi
     - composer install
     - npm install npm@latest -g
@@ -73,6 +74,7 @@ setup_and_test:
     - mysql:5.7
   allow_failure: false
   script:
+    - composer self-update
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/setup_app.sh
     - $SCRIPT_DIR/test.sh
@@ -88,5 +90,6 @@ deploy:
     variables:
       - $CI_MERGE_REQUEST_ID =~ ".+"
   script:
+    - composer self-update
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/deploy_artifact.sh
