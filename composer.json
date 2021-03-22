@@ -1,5 +1,5 @@
 {
-  "name": "mikemadison13/blt-gitlab-pipelines",
+  "name": "flux423/blt-gitlab-pipelines",
   "type": "library",
   "description": "Gitlabs Pipelines integration for Acquia BLT.",
   "license": "GPL-2.0+",

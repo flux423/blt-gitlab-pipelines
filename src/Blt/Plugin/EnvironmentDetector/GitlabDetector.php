@@ -10,6 +10,6 @@ class GitlabDetector extends EnvironmentDetector {
     }
 
     public static function getCiSettingsFile() {
-        return sprintf('%s/vendor/mikemadison13/blt-gitlab-pipelines/settings/gitlab.settings.php', dirname(DRUPAL_ROOT));
+        return sprintf('%s/vendor/flux423/blt-gitlab-pipelines/settings/gitlab.settings.php', dirname(DRUPAL_ROOT));
     }
 }

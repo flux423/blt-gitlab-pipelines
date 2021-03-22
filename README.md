@@ -11,7 +11,7 @@ To use this plugin, you must already have a Drupal project using BLT 11.3 (or hi
 
 In your project, require the plugin with Composer:
 
-`composer require mikemadison13/blt-gitlab-pipelines`
+`composer require flux423/blt-gitlab-pipelines`
 
 Initialize the Gitlab integration by calling `recipes:ci:gitlab:init`, which is provided by this plugin:
 
