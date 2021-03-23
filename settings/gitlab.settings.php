@@ -10,6 +10,10 @@
  *
  * @see ci.settings.php
  */
+
+use Acquia\Blt\Robo\Common\EnvironmentDetector;
+use Drupal\Component\Assertion\Handle;
+
 $databases = [
   'default' =>
     [
