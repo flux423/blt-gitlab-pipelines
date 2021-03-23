@@ -48,6 +48,8 @@ before_script: []
 build:
   stage: build
   extends: .global_cache
+  services:
+    - mysql:5.7
   allow_failure: false
   script:
     - composer self-update
@@ -61,6 +63,8 @@ validate:
   extends:
     - .global_cache
     - build
+  services:
+    - mysql:5.7
   allow_failure: false
   script:
     - $SCRIPT_DIR/validate.sh

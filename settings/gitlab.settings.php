@@ -18,15 +18,21 @@ $settings['trusted_host_patterns'] = [
  *
  * This will be overridden by system specific CI files.
  */
-$databases['default']['default'] = [
-  'database' => 'drupal',
-  'username' => 'drupal',
-  'password' => 'drupal',
-  'host' => 'mysql',
-  'port' => '3306',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
-  'driver' => 'mysql',
-  'prefix' => '',
+$databases = [
+  'default' =>
+    [
+      'default' =>
+        [
+          'database' => 'drupal',
+          'username' => 'drupal',
+          'password' => 'drupal',
+          'host' => 'mysql',
+          'port' => '3306',
+          'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+          'driver' => 'mysql',
+          'prefix' => '',
+        ],
+    ],
 ];
 
 /**
