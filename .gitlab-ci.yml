@@ -7,8 +7,7 @@ stages:
   - deploy
 
 variables:
-  APP_NAME: Drupal9Demo
-  SSH_KNOWN_HOSTS: acquia.com
+  APP_NAME: blt-gitlab-pipelines
   BLT: ./vendor/bin/blt
   SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
   MYSQL_DATABASE: drupal
@@ -43,8 +42,7 @@ cache: &global_cache
       - $MYSQL_DATABASE
       - $MYSQL_ROOT_PASSWORD
 
-before_script:
-  - $SCRIPT_DIR/setup_ssh.sh
+before_script: []
 
 build:
   stage: build
@@ -75,7 +73,6 @@ setup_and_test:
   allow_failure: false
   script:
     - composer self-update
-    - cp ./vendor/flux423/blt-gitlab-pipelines/settings/gitlab.settings.php ./docroot/sites/default/settings/ci.settings.php
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/setup_app.sh
     - $SCRIPT_DIR/test.sh
