@@ -1,35 +1,36 @@
 <?php
+declare(strict_types=1);
 
-/**
- * @file
- * Local development override configuration feature.
- */
-
-use Acquia\Blt\Robo\Common\EnvironmentDetector;
-use Drupal\Component\Assertion\Handle;
-
-$db_name = 'drupal';
+// @codingStandardsIgnoreFile
 
 /**
  * Database configuration.
  */
-$databases['default']['default'] = [
-  'database' => 'drupal',
-  'username' => 'drupal',
-  'password' => 'drupal',
-  'host' => 'mysql',
-  'port' => '3306',
-  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
-  'driver' => 'mysql',
-  'prefix' => '',
+
+use Drupal\Component\Assertion\Handle;
+
+$databases = [
+  'default' =>
+    [
+      'default' =>
+        [
+          'database' => 'drupal',
+          'username' => 'drupal',
+          'password' => 'drupal',
+          'host' => 'mysql',
+          'port' => '3306',
+          'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+          'driver' => 'mysql',
+          'prefix' => '',
+        ],
+    ],
 ];
 
-// Use development service parameters.
-$settings['container_yamls'][] = EnvironmentDetector::getRepoRoot() . '/docroot/sites/development.services.yml';
-$settings['container_yamls'][] = EnvironmentDetector::getRepoRoot() . '/docroot/sites/blt.development.services.yml';
+$dir = dirname(DRUPAL_ROOT);
 
-// Allow access to update.php.
-$settings['update_free_access'] = TRUE;
+// Use development service parameters.
+$settings['container_yamls'][] = $dir . '/docroot/sites/development.services.yml';
+$settings['container_yamls'][] = $dir . '/docroot/sites/blt.development.services.yml';
 
 /**
  * Assertions.
@@ -66,84 +67,36 @@ $config['system.performance']['js']['preprocess'] = FALSE;
 
 /**
  * Disable the render cache (this includes the page cache).
- *
- * Note: you should test with the render cache enabled, to ensure the correct
- * cacheability metadata is present. However, in the early stages of
- * development, you may want to disable it.
- *
- * This setting disables the render cache by using the Null cache back-end
- * defined by the development.services.yml file above.
- *
- * Do not use this setting until after the site is installed.
- */
-// $settings['cache']['bins']['render'] = 'cache.backend.null';
-/**
- * Disable Dynamic Page Cache.
- *
- * Note: you should test with Dynamic Page Cache enabled, to ensure the correct
- * cacheability metadata is present (and hence the expected behavior). However,
- * in the early stages of development, you may want to disable it.
- */
-// $settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.null';
-/**
- * Allow test modules and themes to be installed.
- *
- * Drupal ignores test modules and themes by default for performance reasons.
- * During development it can be useful to install test extensions for debugging
- * purposes.
  */
 $settings['extension_discovery_scan_tests'] = FALSE;
 
 
 /**
  * Configure static caches.
- *
- * Note: you should test with the config, bootstrap, and discovery caches
- * enabled to test that metadata is cached as expected. However, in the early
- * stages of development, you may want to disable them. Overrides to these bins
- * must be explicitly set for each bin to change the default configuration
- * provided by Drupal core in core.services.yml.
- * See https://www.drupal.org/node/2754947
- */
+*/
 
-// $settings['cache']['bins']['bootstrap'] = 'cache.backend.null';
-// $settings['cache']['bins']['discovery'] = 'cache.backend.null';
-// $settings['cache']['bins']['config'] = 'cache.backend.null';
 /**
  * Enable access to rebuild.php.
- *
- * This setting can be enabled to allow Drupal's php and database cached
- * storage to be cleared via the rebuild.php page. Access to this page can also
- * be gained by generating a query string from rebuild_token_calculator.sh and
- * using these parameters in a request to rebuild.php.
  */
 $settings['rebuild_access'] = FALSE;
 
 /**
- * Skip file system permissions hardening.
+ * Temporary file path.
  *
- * The system module will periodically check the permissions of your site's
- * site directory to ensure that it is not writable by the website user. For
- * sites that are managed with a version control system, this can cause problems
- * when files in that directory such as settings.php are updated, because the
- * user pulling in the changes won't have permissions to modify files in the
- * directory.
+ * A local file system path where temporary files will be stored. This
+ * directory should not be accessible over the web.
+ *
+ * Note: Caches need to be cleared when this value is changed.
+ *
+ * See https://www.drupal.org/node/1928898 for more information
+ * about global configuration override.
  */
-$settings['skip_permissions_hardening'] = TRUE;
+$config['system.file']['path']['temporary'] = '/tmp';
 
 /**
- * Files paths.
+ * Private file path.
  */
-$settings['file_private_path'] = EnvironmentDetector::getRepoRoot() . '/files-private/default';
-/**
- * Site path.
- *
- * @var string $site_path
- * This is always set and exposed by the Drupal Kernel.
- */
-// phpcs:ignore
-$settings['file_public_path'] = 'sites/' . EnvironmentDetector::getSiteName($site_path) . '/files';
-
+$settings['file_private_path'] = $dir . '/files-private';
 
 /**
  * Trusted host configuration.
@@ -153,3 +106,4 @@ $settings['file_public_path'] = 'sites/' . EnvironmentDetector::getSiteName($sit
 $settings['trusted_host_patterns'] = [
   '^.+$',
 ];
+
