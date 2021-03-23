@@ -10,6 +10,7 @@ variables:
   APP_NAME: blt-gitlab-pipelines
   BLT: ./vendor/bin/blt
   SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
+  SSH_KNOWN_HOSTS: acquia.com
   MYSQL_DATABASE: drupal
   MYSQL_ROOT_PASSWORD: drupal
 
