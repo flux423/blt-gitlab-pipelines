@@ -4,11 +4,10 @@ stages:
   - build
   - validate
   - setup_and_test
-  - test
   - deploy
 
 variables:
-  APP_NAME: Drupal9Demo
+  APP_NAME: blt-gitlab-pipelines
   BLT: ./vendor/bin/blt
   SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
   MYSQL_DATABASE: drupal
@@ -40,7 +39,6 @@ cache: &global_cache
       - $CI_SERVER_VERSION
       - $CI_COMMIT_BRANCH
       - $CI_MERGE_REQUEST_ID
-      - $PERCY_TOKEN
       - $MYSQL_DATABASE
       - $MYSQL_ROOT_PASSWORD
 
