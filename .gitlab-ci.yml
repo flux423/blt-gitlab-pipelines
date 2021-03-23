@@ -89,5 +89,6 @@ deploy:
       - $CI_MERGE_REQUEST_ID =~ ".+"
   script:
     - composer self-update
+	 - $SCRIPT_DIR/setup_ssh.sh
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/deploy_artifact.sh
