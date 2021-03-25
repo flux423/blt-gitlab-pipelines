@@ -54,7 +54,7 @@ build:
   allow_failure: false
   script:
     - composer self-update
-    - composer clear
+    - composer clear --ansi
     - composer validate --no-check-all --ansi
     - composer install
     - npm install npm@latest -g
@@ -75,8 +75,6 @@ setup_and_test:
     - build
   allow_failure: false
   script:
-    - composer self-update
-    - composer clear
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/setup_app.sh
     - $SCRIPT_DIR/test.sh
@@ -92,8 +90,6 @@ deploy:
     variables:
       - $CI_MERGE_REQUEST_ID =~ ".+"
   script:
-    - composer self-update
-    - composer clear
     - $SCRIPT_DIR/setup_ssh.sh
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/deploy_artifact.sh
