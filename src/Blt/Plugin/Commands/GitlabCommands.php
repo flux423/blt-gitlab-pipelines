@@ -17,7 +17,7 @@ class GitlabCommands extends BltTasks {
    * @command recipes:ci:gitlab:init
    * @throws \Acquia\Blt\Robo\Exceptions\BltException
    */
-  public function GitlabInit() {
+  public function gitlabInit() {
     $result = $this->taskFilesystemStack()
       ->copy($this->getConfigValue('repo.root') . '/vendor/flux423/blt-gitlab-pipelines/.gitlab-ci.yml', $this->getConfigValue('repo.root') . '/.gitlab-ci.yml', TRUE)
       ->stopOnFail()
