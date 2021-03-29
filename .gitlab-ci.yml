@@ -64,6 +64,9 @@ validate:
   extends:
     - .global_cache
     - build
+  needs:
+    - job: build
+      artifacts: true
   allow_failure: false
   script:
     - $SCRIPT_DIR/validate.sh
@@ -73,6 +76,9 @@ setup_and_test:
   extends:
     - .global_cache
     - build
+  needs:
+    - job: build
+      artifacts: true
   allow_failure: false
   except:
     - $CI_MERGE_REQUEST_ID =~ ".+"
@@ -87,6 +93,9 @@ deploy:
   extends:
     - .global_cache
     - build
+  needs:
+    - job: build
+      artifacts: true
   allow_failure: false
   # see https://gitlab.com/gitlab-org/gitlab/-/issues/28732
   only:
