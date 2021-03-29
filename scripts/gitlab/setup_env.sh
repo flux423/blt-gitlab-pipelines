@@ -12,7 +12,7 @@ git config --global user.email "noreply@gitlab.com"
 touch /usr/local/etc/php/conf.d/docker-php-ext-ci.ini
 echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-ext-ci.ini
 
-# Create a MySQL database for drupal to use
+# Create a MySQL database for drupal8 to use
 echo "CREATE DATABASE IF NOT EXISTS \`drupal8\`;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
 echo "CREATE USER 'drupal8'@'%' IDENTIFIED BY 'drupal8';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
 echo "GRANT ALL ON drupal8.* TO 'drupal8'@'%';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql

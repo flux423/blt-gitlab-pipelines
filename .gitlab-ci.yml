@@ -74,6 +74,9 @@ setup_and_test:
     - .global_cache
     - build
   allow_failure: false
+  except:
+    - $CI_MERGE_REQUEST_ID =~ ".+"
+    - /^hotfix\/.*$/
   script:
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/setup_app.sh
@@ -86,9 +89,9 @@ deploy:
     - build
   allow_failure: false
   # see https://gitlab.com/gitlab-org/gitlab/-/issues/28732
-  except:
-    variables:
+  only:
       - $CI_MERGE_REQUEST_ID =~ ".+"
+      - /^hotfix\/.*$/
   script:
     - $SCRIPT_DIR/setup_ssh.sh
     - $SCRIPT_DIR/setup_env.sh
