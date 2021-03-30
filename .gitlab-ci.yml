@@ -83,6 +83,7 @@ setup_and_test:
   allow_failure: false
   except:
     - $CI_MERGE_REQUEST_ID =~ ".+"
+    - /^hotfix\/.*$/
     - /^next\/.*$/
   script:
     - $SCRIPT_DIR/setup_env.sh
@@ -106,6 +107,7 @@ deploy:
   allow_failure: false
   only:
       - $CI_MERGE_REQUEST_ID =~ ".+"
+      - /^hotfix\/.*$/
       - /^next\/.*$/
   script:
     - composer self-update
