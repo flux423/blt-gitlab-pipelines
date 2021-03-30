@@ -4,7 +4,7 @@
 
 set -ev
 
-apt-get update -y && apt-get install rsync openssh-client yarn libnss3 libgconf-2-4 -y
+apt-get update -y && apt-get install openssh-client -y
 eval $(ssh-agent -s)
 ssh-add <(echo "$SSH_PRIVATE_KEY")
 mkdir -p ~/.ssh

@@ -93,6 +93,13 @@ setup_and_test:
     - $SCRIPT_DIR/test.sh
 
 deploy:
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | ssh-add - > ~/.ssh/id_rsa
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   stage: deploy
   extends:
     - .global_cache
@@ -100,11 +107,10 @@ deploy:
   dependencies:
     - build
   allow_failure: false
-  # see https://gitlab.com/gitlab-org/gitlab/-/issues/28732
   only:
       - $CI_MERGE_REQUEST_ID =~ ".+"
       - /^next\/.*$/
   script:
-    - $SCRIPT_DIR/setup_ssh.sh
+    #- $SCRIPT_DIR/setup_ssh.sh
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/deploy_artifact.sh
