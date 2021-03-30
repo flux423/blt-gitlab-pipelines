@@ -52,6 +52,9 @@ build:
   stage: build
   extends: .global_cache
   allow_failure: false
+  artifacts:
+    paths:
+      - artifacts/
   script:
     - composer self-update
     - composer clear --ansi
@@ -66,9 +69,6 @@ validate:
     - build
   dependencies:
     - build
-  needs:
-    - job: build
-      artifacts: false
   allow_failure: false
   script:
     - $SCRIPT_DIR/validate.sh
@@ -78,9 +78,6 @@ setup_and_test:
   extends:
     - .global_cache
     - build
-  needs:
-    - job: build
-      artifacts: true
   dependencies:
     - build
   allow_failure: false
@@ -111,6 +108,6 @@ deploy:
       - $CI_MERGE_REQUEST_ID =~ ".+"
       - /^next\/.*$/
   script:
-    #- $SCRIPT_DIR/setup_ssh.sh
-    - $SCRIPT_DIR/setup_env.sh
+    - composer self-update
+    - composer install
     - $SCRIPT_DIR/deploy_artifact.sh
