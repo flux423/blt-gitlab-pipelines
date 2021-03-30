@@ -6,10 +6,13 @@ set -ev
 
 apt-get update -y && apt-get install openssh-client -y
 eval $(ssh-agent -s)
-cat $SSH_PRIVATE_KEY | tr -d '\r' | ssh-add -
+ssh-add <(echo "$SSH_PRIVATE_KEY")
 mkdir -p ~/.ssh
-chmod -R 700 ~/.ssh
-ssh-keyscan $SSH_KNOWN_HOSTS >> ~/.ssh/known_hosts
+rm -rf ~/.ssh/known_hosts
+ssh-keyscan -H '$SSH_KNOWN_HOSTS' >> ~/.ssh/known_hosts
+ssh-keyscan $SSH_KNOWN_HOSTS | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
+chmod 700 ~/.ssh
 chmod 644 ~/.ssh/known_hosts
+echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
 set +v
