@@ -11,8 +11,8 @@ variables:
   BLT: ./vendor/bin/blt
   SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
   SSH_KNOWN_HOSTS: acquia.com
-  MYSQL_DATABASE: drupal8
-  MYSQL_ROOT_PASSWORD: drupal8
+  MYSQL_DATABASE: drupal
+  MYSQL_ROOT_PASSWORD: drupal
 
 cache: &global_cache
   key: ${CI_COMMIT_REF_SLUG}
