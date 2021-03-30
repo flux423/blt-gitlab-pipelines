@@ -64,9 +64,11 @@ validate:
   extends:
     - .global_cache
     - build
+  dependencies:
+    - build
   needs:
     - job: build
-      artifacts: true
+      artifacts: false
   allow_failure: false
   script:
     - $SCRIPT_DIR/validate.sh
@@ -79,10 +81,12 @@ setup_and_test:
   needs:
     - job: build
       artifacts: true
+  dependencies:
+    - build
   allow_failure: false
   except:
     - $CI_MERGE_REQUEST_ID =~ ".+"
-    - /^hotfix\/.*$/
+    - /^next\/.*$/
   script:
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/setup_app.sh
@@ -93,14 +97,13 @@ deploy:
   extends:
     - .global_cache
     - build
-  needs:
-    - job: build
-      artifacts: true
+  dependencies:
+    - build
   allow_failure: false
   # see https://gitlab.com/gitlab-org/gitlab/-/issues/28732
   only:
       - $CI_MERGE_REQUEST_ID =~ ".+"
-      - /^hotfix\/.*$/
+      - /^next\/.*$/
   script:
     - $SCRIPT_DIR/setup_ssh.sh
     - $SCRIPT_DIR/setup_env.sh
