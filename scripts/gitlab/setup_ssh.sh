@@ -8,11 +8,12 @@ apt-get update -y && apt-get install rsync openssh-client yarn libnss3 libgconf-
 eval $(ssh-agent -s)
 ssh-add <(echo "$SSH_PRIVATE_KEY")
 mkdir -p ~/.ssh
-rm -rf ~/.ssh/known_hosts
-ssh-keyscan -H '$SSH_KNOWN_HOSTS' >> ~/.ssh/known_hosts
-ssh-keyscan $SSH_KNOWN_HOSTS | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
+ssh-keyscan -H 'acquia.com' >> ~/.ssh/known_hosts
+ssh-keyscan acquia.com | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
+echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 chmod 700 ~/.ssh
 chmod 644 ~/.ssh/known_hosts
-echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
 set +v
+
+
