@@ -10,7 +10,6 @@ variables:
   APP_NAME: blt-gitlab-pipelines
   BLT: ./vendor/bin/blt
   SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
-  SSH_KNOWN_HOSTS: acquia.com
   MYSQL_DATABASE: drupal
   MYSQL_ROOT_PASSWORD: drupal
 
@@ -84,7 +83,6 @@ setup_and_test:
   except:
     - $CI_MERGE_REQUEST_ID =~ ".+"
     - /^hotfix\/.*$/
-    - /^next\/.*$/
   script:
     - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/setup_app.sh
@@ -108,7 +106,6 @@ deploy:
   only:
       - $CI_MERGE_REQUEST_ID =~ ".+"
       - /^hotfix\/.*$/
-      - /^next\/.*$/
   script:
     - composer self-update
     - composer install
