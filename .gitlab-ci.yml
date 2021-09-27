@@ -1,9 +1,10 @@
-image: acquia/ads-local:lando-php-7.3-nodejs-10
+image: 'drupal:php7.4-apache'
 
 stages:
   - build
   - validate
-  - setup_and_test
+  - setup
+  - test
   - deploy
 
 variables:
@@ -13,10 +14,10 @@ variables:
   MYSQL_DATABASE: drupal
   MYSQL_ROOT_PASSWORD: drupal
 
-cache: &global_cache
-  key: ${CI_COMMIT_REF_SLUG}
+cache:
+  key: '${CI_COMMIT_REF_SLUG}'
   policy: pull-push
-  paths:
+  paths: &ref_0
     - $HOME/.npm
     - $HOME/.nvm
     - $CI_PROJECT_DIR/docroot/core
@@ -25,11 +26,11 @@ cache: &global_cache
     - $CI_PROJECT_DIR/docroot/themes/contrib
     - $CI_PROJECT_DIR/docroot/profiles/contrib
     - $CI_PROJECT_DIR/vendor
-
 .global_cache:
   cache:
-    <<: *global_cache
+    key: '${CI_COMMIT_REF_SLUG}'
     policy: pull-push
+    paths: *ref_0
   only:
     variables:
       - $GITLAB_CI
@@ -43,23 +44,39 @@ cache: &global_cache
       - $MYSQL_ROOT_PASSWORD
 
 services:
-  - mysql:5.7
+  - 'mysql:5.7'
 
 before_script: []
 
 build:
   stage: build
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | ssh-add - > ~/.ssh/id_rsa
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+    - apt-get update -y && apt-get upgrade -y
+    - apt-get install -y build-essential git zip unzip python nodejs rsync nano openssh-client libxss1 default-mysql-client
+    - apt-get update -y && apt-get upgrade -y
+    - npm install npm@latest -g
+    - composer self-update --2
+    - composer clear --ansi
+    - composer validate --no-check-all --ansi
+    - composer install --prefer-dist
   extends: .global_cache
   allow_failure: false
   artifacts:
     paths:
-      - artifacts/
+       - target/$CI_COMMIT_REF_SLUG
+    expire_in: 2 days
+  cache:
+    key: ${CI_BUILD_REF_NAME}
+    policy: pull-push
   script:
-    - composer self-update
-    - composer clear --ansi
-    - composer validate --no-check-all --ansi
-    - composer install
-    - npm install npm@latest -g
+    - echo ""
 
 validate:
   stage: validate
@@ -68,45 +85,72 @@ validate:
     - build
   dependencies:
     - build
+  needs:
+    - build
   allow_failure: false
   script:
-    - $SCRIPT_DIR/validate.sh
+    - $SCRIPT_DIR/setup_env.sh
 
-setup_and_test:
-  stage: setup_and_test
+setup:
+  stage: setup
   extends:
     - .global_cache
     - build
+    - validate
   dependencies:
     - build
+    - validate
+  needs:
+    - build
   allow_failure: false
-  except:
-    - $CI_MERGE_REQUEST_ID =~ ".+"
-    - /^hotfix\/.*$/
+  artifacts:
+    paths:
+       - target/$CI_COMMIT_REF_SLUG
+    expire_in: 2 days
+  cache:
+    key: ${CI_BUILD_REF_NAME}
+    policy: pull-push
   script:
-    - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/setup_app.sh
+
+test:
+  stage: test
+  extends:
+    - .global_cache
+    - build
+    - setup
+  needs:
+    - build
+    - setup
+  dependencies:
+    - build
+    - setup
+  allow_failure: true
+  cache:
+    key: ${CI_BUILD_REF_NAME}
+    policy: pull-push
+  script:
     - $SCRIPT_DIR/test.sh
 
 deploy:
-  before_script:
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY" | ssh-add - > ~/.ssh/id_rsa
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   stage: deploy
   extends:
     - .global_cache
     - build
+    - setup
+  needs:
+    - build
+    - setup
   dependencies:
     - build
+    - setup
   allow_failure: false
-  only:
-      - $CI_MERGE_REQUEST_ID =~ ".+"
-      - /^hotfix\/.*$/
+  artifacts:
+    paths:
+       - target/$CI_COMMIT_REF_SLUG
+    expire_in: 2 days
+  cache:
+    key: ${CI_BUILD_REF_NAME}
+    policy: pull
   script:
-    - composer self-update
-    - composer install
     - $SCRIPT_DIR/deploy_artifact.sh
