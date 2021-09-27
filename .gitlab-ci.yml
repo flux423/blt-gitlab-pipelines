@@ -102,6 +102,7 @@ setup:
     - validate
   needs:
     - build
+    - validate
   allow_failure: false
   artifacts:
     paths:
