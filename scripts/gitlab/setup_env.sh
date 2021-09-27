@@ -19,8 +19,8 @@ echo "GRANT ALL ON drupal.* TO 'drupal'@'%';" | mysql --user=root --password="$M
 echo "FLUSH PRIVILEGES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
 
 # Install Google Chrome and Cleanup Binary
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-apt install -y ./google-chrome-stable_current_amd64.deb
-rm google-chrome-stable_current_amd64.deb
+#wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#apt install -y ./google-chrome-stable_current_amd64.deb
+#rm google-chrome-stable_current_amd64.deb
 
 set +v
