@@ -18,6 +18,9 @@ echo "CREATE USER 'drupal'@'%' IDENTIFIED BY 'drupal';" | mysql --user=root --pa
 echo "GRANT ALL ON drupal.* TO 'drupal'@'%';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
 echo "FLUSH PRIVILEGES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
 
+# Create gitlab setting file
+cp vendor/flux423/blt-gitlab-pipelines/settings/gitlab.settings.php docroot/sites/default/settings/local.settings.php
+
 # Install Google Chrome and Cleanup Binary
 #wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 #apt install -y ./google-chrome-stable_current_amd64.deb
