@@ -25,9 +25,6 @@ curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | bash -
 apt install -y nodejs
 npm install -g npm
 
-# install composer
-composer validate --no-check-all --ansi
-composer install
 
 # Install Google Chrome and Cleanup Binary
 wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
