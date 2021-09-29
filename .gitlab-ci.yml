@@ -6,6 +6,7 @@ variables:
   APP_NAME: BLT-Project
   BLT: ./vendor/bin/blt
   SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
+  SSH_HOST: acquia.com
   MYSQL_DATABASE: drupal
   MYSQL_ROOT_PASSWORD: drupal
   PHP_VERSION: "8.0"
