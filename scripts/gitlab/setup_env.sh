@@ -37,7 +37,8 @@ eval $(ssh-agent -s)
 ssh-add <(echo "$SSH_PRIVATE_KEY")
 mkdir -p ~/.ssh
 rm -rf ~/.ssh/known_hosts
-ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+ssh-keyscan -H "acquia.com" >> ~/.ssh/known_hosts
+ssh-keyscan -H -t rsa "$SSH_HOST" >> ~/.ssh/known_hosts
 ssh-keyscan "$SSH_HOST" | sort -u - ~/.ssh/known_hosts -o ~/.ssh/known_hosts
 echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
 
