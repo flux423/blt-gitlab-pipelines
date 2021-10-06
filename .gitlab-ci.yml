@@ -5,10 +5,10 @@ stages:
 variables:
   APP_NAME: BLT-Project
   BLT: ./vendor/bin/blt
-  SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
   SSH_HOST: acquia.com
+  SCRIPT_DIR: ./vendor/flux423/blt-gitlab-pipelines/scripts/gitlab
   MYSQL_DATABASE: drupal
-  MYSQL_ROOT_PASSWORD: drupal
+  MYSQL_ROOT_PASSWORD: root
   PHP_VERSION: "8.0"
   NODE_VERSION: "14.x"
 
@@ -44,7 +44,15 @@ cache: &global_cache
       - $MYSQL_DATABASE
       - $MYSQL_ROOT_PASSWORD
 
-before_script: []
+before_script:
+  - apt-get update -y && apt-get install openssh-client -y
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - ssh-keyscan -H -t rsa "$SSH_HOST" >> ~/.ssh/known_hosts
+  - chmod 644 ~/.ssh/known_hosts
+  - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+  - chmod 700 ~/.ssh
 
 build:
   stage: build
@@ -66,18 +74,10 @@ deploy:
     - .global_cache
     - build
   allow_failure: false
-  # see https://gitlab.com/gitlab-org/gitlab/-/issues/28732
   only:
     - $CI_MERGE_REQUEST_ID =~ ".+"
     - main
     - master
     - /^hotfix.*$/
-  before:
-      - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-      - eval $(ssh-agent -s)
-      - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-      - mkdir -p ~/.ssh
-      - chmod 700 ~/.ssh
   script:
-    - $SCRIPT_DIR/setup_env.sh
     - $SCRIPT_DIR/deploy_artifact.sh

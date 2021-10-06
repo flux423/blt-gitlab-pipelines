@@ -31,13 +31,4 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 apt install -y ./google-chrome-stable_current_amd64.deb
 rm google-chrome-stable_current_amd64.deb
 
-# Create ssh-auth to host
-apt-get update -y && apt-get install openssh-client -y
-eval $(ssh-agent -s)
-echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-mkdir -p ~/.ssh
-ssh-keyscan -H -t rsa "$SSH_HOST" >> ~/.ssh/known_hosts
-chmod 644 ~/.ssh/known_hosts
-echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-chmod 700 ~/.ssh
 set +v
