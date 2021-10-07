@@ -1,5 +1,7 @@
 stages:
   - build
+  - setup
+  - test
   - deploy
 
 variables:
@@ -13,6 +15,8 @@ variables:
   NODE_VERSION: "14.x"
 
 image: devwithlando/php:$PHP_VERSION-apache-2
+services:
+    - mysql:5.7
 
 cache: &global_cache
   key: ${CI_COMMIT_REF_SLUG}
@@ -54,25 +58,66 @@ before_script:
   - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
   - chmod 700 ~/.ssh
 
-build:
+composer:
   stage: build
   extends: .global_cache
   allow_failure: false
-  services:
-    - mysql:5.7
+
   script:
     - composer validate --no-check-all --ansi
     - composer install
+
+setup_env:
+  stage: setup
+  extends:
+    - .global_cache
+    - composer
+  allow_failure: false
+  script:
     - $SCRIPT_DIR/setup_env.sh
-    - $SCRIPT_DIR/validate.sh
+
+setup_app:
+  stage: setup
+  extends:
+    - .global_cache
+    - composer
+    - setup_env
+  allow_failure: false
+  script:
     - $SCRIPT_DIR/setup_app.sh
+
+validate:
+  stage: test
+  extends:
+    - .global_cache
+    - composer
+    - setup_env
+    - setup_app
+  allow_failure: false
+  script:
+    - $SCRIPT_DIR/validate.sh
+
+run_tests:
+  stage: test
+  extends:
+    - .global_cache
+    - composer
+    - setup_env
+    - setup_app
+    - validate
+  allow_failure: true
+  script:
     - $SCRIPT_DIR/test.sh
 
 deploy:
   stage: deploy
   extends:
     - .global_cache
-    - build
+    - composer
+    - setup_env
+    - setup_app
+    - validate
+    - run_tests
   allow_failure: false
   only:
     - $CI_MERGE_REQUEST_ID =~ ".+"
