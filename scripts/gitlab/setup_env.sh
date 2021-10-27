@@ -13,9 +13,9 @@ touch /usr/local/etc/php/conf.d/docker-php-ext-ci.ini
 echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-ext-ci.ini
 
 # Create a MySQL database for drupal to use
-echo "CREATE DATABASE IF NOT EXISTS \`drupal\`;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
-echo "CREATE USER 'drupal'@'%' IDENTIFIED BY 'drupal';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
-echo "GRANT ALL ON drupal.* TO 'drupal'@'%';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
+echo "CREATE DATABASE IF NOT EXISTS \`$MYSQL_DATABASE\`;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
+echo "CREATE USER '#MYSQL_DATABASE'@'%' IDENTIFIED BY '$MYSQL_DATABASE';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
+echo "GRANT ALL ON #MYSQL_DATABASE.* TO '$MYSQL_DATABASE'@'%';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
 echo "FLUSH PRIVILEGES;" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql
 
 # Install Node JS and NPM
